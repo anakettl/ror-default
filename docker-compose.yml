@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres
+    volumes:
+     - ./tmp/db:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+  web:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    command: rails s -b 0.0.0.0
+    environment:
+      - DATABASE_HOST=db
+    env_file:
+      - .env
+
+volumes:
+  db:
